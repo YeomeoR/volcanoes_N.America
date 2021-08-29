@@ -1,0 +1,67 @@
+pip3 install folium
+map = folium.Map(location=[38.58,-99.09])
+>>> map
+<folium.folium.Map object at 0x00000238CAD6C640>
+>>> map.save("Map1.html")
+
+add zoom_start=6 and tiles="Staymen Terrain" inline with the locations coords
+
+create map.py
+add a marker for the points on the map. This code goes in map.py above map.save("Map1.html")
+
+
+map.add_child(folium.Marker(location=[38.2,-99.1],popup="I am a marker", icon=folium.Icon(color='green')))
+
+now amend the above code so that a 'FeatureGroup' is created and saved as a variable@
+
+fg = folium.FeatureGroup(name="Volcanos Map")
+
+amend map.add_child to be fg.add_child (in the above line of code)
+
+then:
+map.add_child(fg)
+
+we can now add other features to this child FeatureGroup in the future. cleaner code etc.:
+
+fg = folium.FeatureGroup(name="Volcano Map")
+fg.add_child(folium.Marker(location=[38.2,-99.1],popup="I am a marker", icon=folium.Icon(color='green')))
+map.add_child(fg)
+
+
+we now need to use a for loop to loop over coordinates in order to get many markers at coordinates.
+we will use data from a csv file or other file type. 
+we will loop over this new data and pass in the coords to the code.
+
+line: fg.add_child....... becomes the logic in the for loop
+
+for coords in [[38.2,-99.1],[37.0,-98.0]]: # list of 2 coords to check it works
+    fg.add_child(folium.Marker(location=coords,popup="I am a marker", icon=folium.Icon(color='green')))
+
+
+now we need to import the data using pandas.
+import pandas as pd
+
+data = pd.read_csv("volcanoes.csv")
+have a look at the data in the terminal or in excel
+check the data.columns
+select the columns we require (lat and lon)
+set them to vars as a list: lat = list(data['LAT']).
+same for lon
+
+ZIP the two columns together so they are 'relational' and loop through them to get coords...
+for this, we need to amend the for loop again:
+for lt,ln in zip(lat,lon):
+and now change the location field in the logic of the for loop:
+location=[lt,ln]
+
+run the file to see that it works
+
+for the popup on the marker, add new vars and loop through them. Change the popup details as required
+
+
+change the marker to CircleMarker. You now need to change a couple of the other features of the marker:
+dir(folium)
+help(folium.CircleMarker)
+
+set the radius, fill_color (with the color function created earlier and el passed in), 
+color of the outer circle, fill_opacity (0-1)
